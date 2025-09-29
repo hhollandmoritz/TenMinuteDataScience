@@ -6,6 +6,8 @@ editor: visual
 
 Code commenting dos and donts
 
+Write code like you write a paper
+
 modular code
 
 -   writing functions

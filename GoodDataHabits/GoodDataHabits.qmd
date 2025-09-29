@@ -1,24 +1,327 @@
 ---
-title: "GoodDataHabits"
-format: html
-editor: visual
+title: "Good Data Habits"
+subtitle: "Starting as you mean to go on"
+format: 
+  revealjs:
+    theme: ["default","../assets/css/slides.scss"]
+    embed-resources: true
+    slide-number: true
+    date:  last-modified
+    date-format: "DD-MMM-YYYY"
+    fig-align: left
+    # turn off chalkboard when pushing to github
+    # chalkboard: 
+    #   theme: whiteboard
+    #   boardmarker-width: 5
+    #   buttons: true
+    preview-links: auto
+    hero: "../figures/xkcd_documents_folder_1459.png"
+    title-slide-attributes: 
+      data-background-size: "cover"
+    template-partials: 
+      - "../assets/title-slide.html"
 ---
 
-File naming conventions
+## File naming conventions {.theme-title1 hero="../assets/enzymes_search.png"}
 
-directory structures
+## Organizing files
 
-metadata (aka readmes)
+Which of these files contains the most recent version of the data?
 
-```{r}
-1 + 1
+``` bash
+$ ls -l data/
+-rw-r--r--. 1 hannah hannah 0 Sep 23 11:38 sample_metadata_clean.tsv
+-rw-r--r--. 1 hannah hannah 0 Sep 23 11:37 sample_metadata.tsv
+-rw-r--r--. 1 hannah hannah 0 Sep 23 11:38 sample_metadata_USE_THIS_ONE.tsv
+-rw-r--r--. 1 hannah hannah 0 Sep 23 11:38 sample_metadataV2_final.tsv
+-rw-r--r--. 1 hannah hannah 0 Sep 23 11:38 sample_metadataV2.tsv
 ```
 
-You can add options to executable code like this
+## File naming conventions {.smaller}
 
-```{r}
-#| echo: false
-2 * 2
+What makes a file name useful? [Metadata]{.green}
+
+::: incremental
+-   Project name or acronym
+-   Study title
+-   Location
+-   Data type
+-   Researcher initials
+-   Date
+-   Data stage (raw, filtered, etc.)
+-   Version number
+-   File type
+-   If script, names should describe what they do
+:::
+
+## Task of the day:
+
+-   rename 3 files
+
+# Directory structures - Get organized!
+
+## Last time on 10-minute data science...
+
+We discussed file naming conventions. What were folks' take-aways?
+
+
+## Directory Structures
+
+Where should you look to find the latest version of protocol you're interested in testing?
+
+![Our lab's sharepoint is a good example of what not to do...](figures/directory_protocols_question.png)
+
+## Directory Structures
+
+Which enzyme assay is the one you want?
+
+![](figures/enzymes_search.png){width="354"}
+
+## Best practices
+
+::: incremental
+-   Choose an organizational style; stick with it
+
+-   If sharing, document the organizational style
+
+-   Divide work into [project directories]{.green}.
+
+    -   Thesis
+        -   Chapters
+    -   Papers
+        -   Sections
+    -   Grants
+        -   subprojects or papers
+:::
+
+. . .
+
+**Take home:** Each project directory should be [self-contained]{.green} and hold all files needed to go from raw data to final results
+
+## Subdirectory choice
+
+What subdirectories do folks use?
+
+. . .
+
+What questions should you ask when creating a new subdirectory?
+
+## Example 1: ARCSS Grant
+
+-   A project I joined when I started working here
+-   Organized around anything relevant to the grant
+-   Includes both sub-"project" directories, but also writing, administrative information, literature
+-   sub-projects are tracked with version control software, but not this directory
+
+```         
+ Conferences/     Conference presentations, trave administrative documents
+ Sean_qsip_tree/  Project file for creating a phylogenetic tree with Sean's qSIP project
+ Literature/      Relevant literature for ARCSS project (automatically integrated into Zotero/Mendeley libraries)
+ Senescence/      Project to identify likely senescence times for our sites
+ mimics_webapp/   Project for Stuart's hairbrained (but genius idea) to turn MIMICS into a webapp
+ Picarro Code/    Nacent code for processing Picarro outputs
+ useful_images/   Helpful images related to the project. Often useful in creating figures or presentations
+ Protocols/       Protocols related to lab work
+ Writing/         Writing folder; includes derived grants, manuscripts, etc.
+ qsip/            FICUS qsip project
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## Example 2: The temporal paper
+
+-   Self-contained project
+-   highly collaborative; structure is co-created with others
+-   designed to be tracked with version control software from day 1
+
+```         
+ Assembly-analysis/                     Sub-analyses; files contain code, outputs, figures
+ cazyme_scraper/                        Shortcut to a different project file, where I wrote a code pipeline
+ CN_versatility/                        Sub-analyses; files contain code, outputs, figures
+ Core_microbiome/                       Sub-analyses; files contain code, outputs, figures
+ data/                                  Raw data; files never edited; common across collaborators; contains both shortcuts to large data sets and actual files
+ general_climate_weather/               Sub-analyses; files contain code, outputs, figures
+ GraftM-analysis/                       Collaborators's sub-analyses; I don't have to edit anything in here
+ identifying-outlier-years/             Sub-analyses; files contain code, outputs, figures
+ identify-temp-WTD-responders/          Sub-analyses; files contain code, outputs, figures
+ Metabolic-analysis/                    Collaborators's sub-analyses; I don't have to edit anything in here
+ metadata_availability/                 Sub-analyses; files contain code, outputs, figures
+ quantify_stability_with_time_figure/   Sub-analyses; files contain code, outputs, figures
+ SingleM-analysis/                      Sub-analyses; files contain code, outputs, figures
+ setup.R                                Common analysis script that takes raw data and does initial cleaning
+ README.md                              Readme file; describes how to setup the code and data on your own computer
+ temporal_paper.yml                     Contains instructions for installing the software necessary for running all the code in the project
+ install_dependencies.sh                Secondary installation script for software not covered by temporal_paper.yml
+```
+
+## Example 3: The dada2 pipeline
+
+-   Purpose: Tutorial/ pipeline
+    -   Doesn't have unique raw data
+-   Output folders generated by code
+-   Emphasis on portability to other computers
+
+```         
+R/             Rscripts live here - they include documentation in the form of R-markdown
+slurm/         slurm scripts for submitting to supercomputer live here
+dada2_ernakovich.yml  Installation and software information
+README.md/     Tutorial information 
+```
+
+## Not sure which is best? Templates exist!
+
+::: {style="text-align: center; margin-top: 1em"}
+[Heidi Seibold's Research Project Template](https://github.com/HeidiSeibold/research-project-template){preview-link="true" style="text-align: center"}
+:::
+
+![](figures/research_project_template_hs.png)
+
+```
+.
+├── README.md
+├── analysis            <- all things data analysis
+│   └── src             <- functions and other source files
+├── comm
+│   ├── internal_comm   <- internal communication such as meeting notes
+│   └── journal_comm    <- communication with the journal, e.g. peer review
+├── data
+│   ├── data_clean      <- clean version of the data
+│   └── data_raw        <- raw data (don't touch)
+├── dissemination
+│   ├── manuscripts
+│   ├── posters
+│   └── presentations
+├── documentation       <- documentation, e.g. data management plan
+└── misc                <- miscellaneous files that don't fit elsewhere
+```
+
+## Taking project folders to the next level
+Project folders allow you to take advantage of coding and project management tools
+
+::: incremental
+-   Most IDEs (Integrated Development Environments, e.g. Rstudio) are set up to allow users to work in and switch easily between projects
+    - [RStudio projects](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects){preview-link="true" style="text-align: center"}
+-   git version tracking - For tracking your code and files, you set up version tracking in a project folder. 
+
+- Sharing a project is easy - simply share the project folder with the collaborator
+
+:::
+ 
+## Mark calendars for Ernakovich Lab Discussion
+
+lab meeting on 10/27/25: . . .
+
+-   Determine organization norms
+-   Reorganize Ernakovich Sharepoint
+-   Create a Guide ('readme') for directories
+
+# Metadata (aka readmes){.title-slide} 
+
+## Last time on 10-minute data science...
+
+We discussed directory structures
+
+
+## What is metadata?
+
+## What should metadata include?
+
+::: incremental
+-   Units
+-   Resolution
+-   Meaning of column names
+-   Description of caveats, issues, or missing values
+-   How data was collected
+-   Filtering or processing steps the data has been through (if applicable)
+:::
+
+## What do you do if you don't know what kind of metadata to include?
+
+-   look it up (many data types have standards
+-   MIMARKS (Minimum information about a marker gene sequence)
+-   MIMAGS (Minimum information about a metagenome-assembled genome) for microbial genomics data)
+-   phone a friend
+
+::: footer
+More Information: [MIMARKS guidelines](https://doi.org/10.1038/nbt.1823) \~ [MIMAG guidelines](https://doi.org/10.1038/nbt.3893)
+:::
+
+
+# Weekly and Daily Checklists
+
+## Last time on 10-minute data science...
+
+We discussed metadata and README files
+
+## What are some habits you have at work?
+
+::: incremental
+- checking email
+- wearing gloves when handling chemicals
+- maintaining a lab notebook
+::: 
+
+## Establishing Good Data Habits
+
+Good data habits can be implemented regardless of your experience or computational skill level
+
+
+Today we'll go through some check-lists you can use to help cultivate good data and coding habits
+
+
+## When starting a project
+
+::: incremental
+- [ ] Create a dedicated [project directory]{.green}, named for the project
+- [ ] Create [subdirectories]{.green} for data, analysis, and documentation
+- [ ] Create a ["README"]{.green} document
+- [ ] Decide how you will [record]{.green} your decisions and data analysis process (e.g. commenting, an electronic lab notebook, documentation, or all of the above)
+- [ ] Decide how you will [keep track of changes]{.green} (and document that decision in the README)
+- [ ] Decide how your will [name your files]{.green} (and document that decision in the README)
+- [ ] Decide how you will [backup changes]{.green} to the project directory [store it in >1 place, ideally mirrored]
+:::
+
+## When you receive (or collect) data
+
+::: incremental
+- [ ] Save at least [2 copies]{.green} of the data in more than one place
+- [ ] Create a [metadata file]{.green}, (data about the data) store it with the data
+- [ ] The metadata includes information about [how]{.green} the data was obtained and [who]{.green} is responsible for it
+- [ ] The data is stored and organized in an [analysis-friendly]{.green} way
+- [ ] [Look at your raw data]{.green} before any processing
+- [ ] Perform [quality control first]{.green}. Before analysis (and document what quality control you performed)
+:::
+
+## When beginning to analyze data
+
+::: incremental
+- [ ] Store all analysis scripts and code in the project directory
+- [ ] Explain the purpose of each script/code/software at the top of the file
+- [ ] Use comments or other "self-documenting" code practices (e.g. rmarkdown, jupyter, quarto notebooks)
+- [ ] Pick a [code style guide]{.green} and stick to it
+- [ ] Use meaningful variable and function names
+- [ ] Create an outline (pseudocode) of analyses to break analysis into smaller steps
+- [ ] [Ruthlessly resist duplication]{.green} (avoid copy and pasting code)
+- [ ] Try to write in functions, and scripts, rather than one, long piece of code
+:::
+
+## At the end of the day
+
+- [ ] Back up data; (never overwrite originals!)
+- [ ] Save data, code, figures, etc. to appropriate locations in the project directory (not "Downloads", or "Desktop")
+- [ ] Check that all new files have clear, consistent names, following your conventions
+- [ ] Move temporary files, scripts, and other analyses you're unsure you'll keep to a "sandbox" folder
+- [ ] Briefly (2-3 bullets) document the day's work in your lab notebook, readme, change log, etc.
+- [ ] Write down your next steps for tomorrow; including any errors you may have left un-addressed
+- [ ] if using version control software, "commit" your changes with a message
+
+
+# Quality Assurance
+
+# Exploring your data
+
+## test figure
+
+```{r}
+svg <- xml2::read_xml("~/Documents/Ernakovich_Lab/useful_images/noun-jar-170569.svg")
+figure <- bscui::bscui(svg)
+figure
+```
