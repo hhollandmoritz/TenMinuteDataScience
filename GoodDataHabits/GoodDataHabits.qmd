@@ -317,11 +317,3 @@ Today we'll go through some check-lists you can use to help cultivate good data 
 # Quality Assurance
 
 # Exploring your data
-
-## test figure
-
-```{r}
-svg <- xml2::read_xml("~/Documents/Ernakovich_Lab/useful_images/noun-jar-170569.svg")
-figure <- bscui::bscui(svg)
-figure
-```
