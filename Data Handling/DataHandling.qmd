@@ -1,14 +1,18 @@
 ---
-title: "GoodDataHabits"
+title: "Data Handling"
 format: html
 editor: visual
 ---
 
-Raw vs. processed data
+## Raw vs. processed data
 
-backups and syncing
+## Quality Assurance
 
-FAIR data principles
+## backups and syncing
+
+## FAIR data principles
+
+## Exploring your data
 
 ```{r}
 1 + 1
