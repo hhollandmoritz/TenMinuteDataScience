@@ -1,7 +1,26 @@
 ---
-title: "GoodDataHabits"
-format: html
-editor: visual
+title: "Documentation and Reports"
+subtitle: "Creating High Quality Outputs [for fame and glory!]"
+format: 
+  revealjs:
+    theme: ["default","../assets/css/slides.scss"]
+    embed-resources: true
+    slide-number: true
+    date:  last-modified
+    date-format: "DD-MMM-YYYY"
+    fig-align: left
+    # turn off chalkboard when pushing to github
+    # chalkboard: 
+    #   theme: whiteboard
+    #   boardmarker-width: 5
+    #   buttons: true
+    preview-links: auto
+    hero: "figures/xkcd_documents_folder_1459.png"
+    title-slide-attributes: 
+      data-background-size: "cover"
+    template-partials: 
+      - "../assets/title-slide.html"
+      - "../assets/toc-slide.html"
 ---
 
 Electronic lab notebooks
