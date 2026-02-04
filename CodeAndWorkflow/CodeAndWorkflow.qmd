@@ -1,18 +1,267 @@
 ---
-title: "GoodDataHabits"
-format: html
-editor: visual
+title: "Code and Workflow"
+subtitle: "How to code efficiently"
+format: 
+  revealjs:
+    theme: ["default","../assets/css/slides.scss"]
+    embed-resources: true
+    slide-number: true
+    date:  last-modified
+    date-format: "DD-MMM-YYYY"
+    fig-align: left
+    # turn off chalkboard when pushing to github
+    # chalkboard: 
+    #   theme: whiteboard
+    #   boardmarker-width: 5
+    #   buttons: true
+    preview-links: auto
+    hero: "figures/xkcd_documents_folder_1459.png"
+    title-slide-attributes: 
+      data-background-size: "cover"
+    template-partials: 
+      - "../assets/title-slide.html"
+      - "../assets/toc-slide.html"
 ---
 
-Code commenting dos and donts
+# How to write code
 
-Write code like you write a paper
+## Write code like you write a paper
 
-modular code
+-   Writing and coding are not that different; both are iterative
 
--   writing functions
+| Purpose | Writing a Paper | Writing Code |
+|------------------------|------------------------|------------------------|
+| Plan and organize your ideas/approach | Create an outline | Write pseudocode |
+| Communicate your ideas | Write the actual text | Write the code |
+| Get feedback | proofread, share with a co-author | Test code or write unit tests |
+| Facilitate communication and readability with standards | Use standard conventions of grammar and spelling | Use a style guide to keep code consistent |
+| Edit, edit, edit | Refine, polish | Improve efficiency, clarity, and documentation |
 
--   purrr
+## Example: Create a script that can plot an ordination
+
+## What to consider?
+
+-   What inputs do you need?
+-   What outputs will be produced?
+-   What steps are between the two?
+
+## First draft: pseudocode {auto-animate="true"}
+
+``` r
+# Plot ordinations
+# Step 1: Read in data
+# Step 2: re-format data
+# Step 3: Calculate ordination
+# Step 4: Plot ordination
+# Step 5 save graphs, and distance matrix
+```
+
+## Second draft: pseudocode {auto-animate="true"}
+
+``` r
+# Plot ordinations
+# Step 1: Read in data
+# Step 2: re-format data
+# Step 3: Calculate ordination
+#   A) calculate distance matrix
+#   B) run ordination
+# Step 4: Plot ordination
+# Step 5 save graphs, and distance matrix
+```
+
+## Third draft: begin filling code {auto-animate="true"}
+
+``` r
+# Plot ordinations
+# Step 1: Read in data
+# Step 2: re-format data
+# Step 3: Calculate ordination
+# Calculating bray-curtis dissimilarities
+sb_transformed <- t(sqrt(input$data_loaded))
+dm_bc <- vegdist(sb_transformed, method = "bray")
+
+# NMDS ordination (only for bray-curtis dissimilarity)
+sb.nmds <- metaMDS(dm_bc, k = 2, trymax = 100)
+
+# Step 4: Plot ordination
+# Step 5 save graphs, and distance matrix
+```
+
+# Modular code
+
+## What is modular code?
+
+
+## Why use modular code?
+- Reduce the number of changes you need to make to maintain code
+- Reduce the chance of bugs from copy-paste issues
+- Makes code easier to share and modify (and also to share with your future self!)
+
+
+## To write modular code: follow the DRY ("don't repeat yourself") principal. 
+-   Break code into smaller, reusable functions
+-   Use functions that can handle slightly different scenarios with different arguments (plots are an excellent example of this)
+-   In R and python take advantage of lists, arrays, and list operations. (e.g. learn to use `purrr`, `apply` and similar functions)
+- Use libraries and packages rather than reinventing the wheel (* to a point - you can overdo this and add a lot of burden on the installation end)
+- Divide and conquer tasks. Different parts of your code handle different tasks (e.g. data cleaning happens in one script, plotting in another)
+- If you find yourself doing the same things over and over again, consider turning them into a reusable component (e.g. a list, a function, etc.)
+
+## Examples of modular code:
+
+##  Filtering from a shared list {auto-animate="true"}
+Example: I need to filter based on the same group of samples or OTUs
+
+```r
+df1 %>% 
+  filter(SampleID %in% c("sample1", "sample2", "sample5"))
+df2 %>% 
+  filter(SampleID %in% c("sample1", "sample2", "sample5"))
+df3 %>% 
+  filter(SampleID %in% c("sample1", "sample2", "sample5"))
+
+```
+##  Filtering from a shared list {auto-animate="true"}
+Example: I need to filter based on the same group of samples or OTUs
+```r
+my_sample_list <- c("sample1", "sample2", "sample5")
+
+df1 %>% 
+  filter(SampleID %in% my_sample_list)
+df2 %>% 
+  filter(SampleID %in% my_sample_list)
+df3 %>% 
+  filter(SampleID %in% my_sample_list)
+```
+
+## Create a list of common plotting layers  {auto-animate="true"}
+I want all of my plots to have similar elements
+```r
+ plot1 <- genus_10000_contigs_derep95_bins %>%
+  ggplot(aes(habitat, percent_assembled)) +
+  stat_summary(fun=mean, geom="bar", colour=colour_brewer$grey, fill=colour_brewer$blue, size=1),
+  stat_summary(fun.data=mean_sdl, fun.args=list(mult=1), geom="errorbar", size=1, colour=colour_brewer$grey, width=0.5),
+  scale_x_discrete(breaks = habitat_levels, labels = habitat_labels),
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), limits = c(0, 100)),
+  theme_cowplot() +
+  ylab("Average percent assembled")
+  
+ plot2 <- genus_2500_contigs_all_bins %>% 
+  ggplot(aes(habitat, percent_assembled)) +
+  stat_summary(fun=mean, geom="bar", colour=colour_brewer$grey, fill=colour_brewer$blue, size=1),
+  stat_summary(fun.data=mean_sdl, fun.args=list(mult=1), geom="errorbar", size=1, colour=colour_brewer$grey, width=0.5),
+  scale_x_discrete(breaks = habitat_levels, labels = habitat_labels),
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), limits = c(0, 100)),
+  theme_cowplot() +
+  ylab("Average percent assembled")
+
+```
+## Create a list of common plotting layers   {auto-animate="true"}
+```r
+bar_plot_layers <- list(
+  stat_summary(fun=mean, geom="bar", colour=colour_brewer$grey, fill=colour_brewer$blue, size=1),
+  stat_summary(fun.data=mean_sdl, fun.args=list(mult=1), geom="errorbar", size=1, colour=colour_brewer$grey, width=0.5),
+  scale_x_discrete(breaks = habitat_levels, labels = habitat_labels),
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), limits = c(0, 100)),
+  theme_cowplot()
+)
+
+ plot1 <- genus_10000_contigs_derep95_bins %>%
+  ggplot(aes(habitat, percent_assembled)) +
+  bar_plot_layers +
+  ylab("Average percent assembled")
+  
+ plot2 <- genus_2500_contigs_all_bins %>% 
+  ggplot(aes(habitat, percent_assembled)) +
+  bar_plot_layers +
+  ylab("Average percent assembled")
+
+```
+## Write a function {auto-animate="true"}
+I have several different data tables I need to convert to Bray-Curtis distance matrices
+```r
+get_dis_matrix <- function(rel_abund) {
+  dis_matrix <- rel_abund %>%
+    t() %>%
+    vegdist(method = "bray")
+  
+  return(dis_matrix)
+}
+
+dis_matrix_asv <- asv_abundance_cumu %>%
+  t() %>%
+  vegdist(method = "bray")
+  
+dis_matrix_path <- pathway_abundance_cumu %>%
+  t() %>%
+  vegdist(method = "bray")
+
+```
+## Write a function {auto-animate="true"}
+I have several different data tables I need to convert to Bray-Curtis distance matrices
+```r
+get_dis_matrix <- function(rel_abund) {
+  dis_matrix <- rel_abund %>%
+    t() %>%
+    vegdist(method = "bray")
+  
+  return(dis_matrix)
+}
+
+dis_matrix_asv <- get_dis_matrix(asv_abundance_cumu)
+dis_matrix_path <- get_dis_matrix(pathway_abundance_cumu)
+
+```
+
+
+# Code Style
+
+## Why does code need style?
+
+## Elements of code-style
+
+## Spacing
+
+## Variable names
+
+## Function names
+
+## RStudio has a built-in style guide!
+
+## Resources:
+
+<https://mitcommlab.mit.edu/broad/commkit/coding-and-comment-style/>
+
+# Code commenting
+
+## What are comments? Why do we need them?
+
+## Comments should not duplicate code
+
+## Don't expect comments to fix bad code, re-write it instead
+
+## Comments are meant dispel confusion, not cause it
+
+## DO comment critical code that someone might otherwise assume to be redundant or unnecessary
+
+## Use comments to provide citations to original source of code or idea
+
+-   helps provide the full context (e.g. what problem you're trying to solve, alternative solutions)
+-   helps you remember where you got something useful from!! (Particularly helpful when writing methods sections or reusing your own code)
+
+::: aside
+Food for thought: What's an alternative for this, if you use an AI to solve a coding problem?
+:::
+
+## Add comments when fixing bugs
+
+## Use comments to markd "ToDo's" or incomplete code
+
+
+# Putting it all together: Workflows and Pipelines
+
+## Coding tasks often have dependencies, but not all steps depend on others; how to solve this problem?
+
+## Modular workflows with Nextflow
 
 pipeline basics (automating repetative tasks with make files, functions, and nextflow?)
 
